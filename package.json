@@ -1,0 +1,21 @@
+{
+  "name": "open-source-notification-platform",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": ["apps/api", "apps/web", "packages/shared"],
+  "scripts": {
+    "dev": "npm run dev --workspace @notification/api",
+    "dev:web": "npm run dev --workspace @notification/web",
+    "worker": "npm run worker --workspace @notification/api",
+    "build": "npm run build --workspace @notification/shared && npm run build --workspace @notification/api && npm run build --workspace @notification/web",
+    "lint": "npm run lint --workspace @notification/shared && npm run lint --workspace @notification/api && npm run lint --workspace @notification/web",
+    "test": "npm run test --workspaces --if-present",
+    "test:coverage": "npm run test:coverage --workspace @notification/api",
+    "test:e2e": "playwright test",
+    "seed": "npm run seed --workspace @notification/api"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.47.2",
+    "typescript": "^5.6.2"
+  }
+}

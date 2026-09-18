@@ -1,0 +1,1 @@
+module.exports = { preset: "ts-jest/presets/default-esm", testEnvironment: "node", roots: ["<rootDir>/tests"], extensionsToTreatAsEsm: [".ts"], moduleNameMapper: { "^@notification/shared$": "<rootDir>/../../packages/shared/src/index.ts", "^(\\.{1,2}/.*)\\.js$": "$1" }, globals: { "ts-jest": { useESM: true, tsconfig: { isolatedModules: true } } }, testTimeout: 30000 };

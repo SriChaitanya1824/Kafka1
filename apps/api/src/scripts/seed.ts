@@ -1,0 +1,15 @@
+import { connectDb, closeDb } from "../config/db.js";
+import { authService } from "../services/authService.js";
+import { Template } from "../models/Template.js";
+import { Workflow } from "../models/Workflow.js";
+import { ProviderConfig } from "../models/ProviderConfig.js";
+await connectDb();
+const admin = await authService.register({ name: "Admin User", email: "admin@example.com", password: "Password123", role: "ADMIN" }).catch(() => null);
+await authService.register({ name: "Demo User", email: "user@example.com", password: "Password123", role: "USER" }).catch(() => null);
+const createdBy = admin?.user.id;
+const email = await Template.findOneAndUpdate({ name: "Order Confirmation" }, { name: "Order Confirmation", description: "Order email", channel: "EMAIL", subject: "Order {{orderId}} confirmed", content: "Hello {{name}}, your order {{orderId}} has been confirmed.", variables: ["name","orderId"], active: true, createdBy }, { upsert: true, new: true });
+const inapp = await Template.findOneAndUpdate({ name: "Order In-App" }, { name: "Order In-App", channel: "IN_APP", subject: "Order confirmed", content: "Order {{orderId}} is confirmed.", variables: ["orderId"], active: true, createdBy }, { upsert: true, new: true });
+await Workflow.findOneAndUpdate({ name: "User Registration" }, { name: "User Registration", description: "Email plus in-app", active: true, createdBy, steps: [{ order: 1, channel: "EMAIL", templateId: email.id, delay: 0, enabled: true }, { order: 2, channel: "IN_APP", templateId: inapp.id, delay: 0, enabled: true }] }, { upsert: true });
+await ProviderConfig.updateOne({ name: "mock-email" }, { name: "mock-email", channel: "EMAIL", type: "mock", enabled: true, configuration: {} }, { upsert: true });
+console.log("Seed complete. Demo users: admin@example.com / Password123, user@example.com / Password123");
+await closeDb();

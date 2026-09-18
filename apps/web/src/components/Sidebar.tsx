@@ -1,0 +1,4 @@
+import { NavLink } from "react-router-dom";
+import { Bell, BarChart3, FileText, GitBranch, LayoutDashboard, Settings, SlidersHorizontal, Send, Plug } from "lucide-react";
+const links = [["/dashboard", LayoutDashboard, "Dashboard"], ["/notifications", Bell, "Notifications"], ["/templates", FileText, "Templates"], ["/workflows", GitBranch, "Workflows"], ["/analytics", BarChart3, "Analytics"], ["/preferences", SlidersHorizontal, "Preferences"], ["/providers", Plug, "Providers"], ["/settings", Settings, "Settings"]] as const;
+export function Sidebar() { return <aside className="sidebar"><div className="brand"><Send size={22}/>NotifyOS</div>{links.map(([to, Icon, label]) => <NavLink key={to} to={to} className={({isActive}) => isActive ? "active" : ""}><Icon size={18}/>{label}</NavLink>)}</aside>; }

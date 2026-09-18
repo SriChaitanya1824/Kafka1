@@ -1,0 +1,20 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis:7-alpine
+        ports: ["6379:6379"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm install
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+      - run: docker build -f docker/api.Dockerfile -t notification-api .
+      - run: docker build -f docker/worker.Dockerfile -t notification-worker .
+      - run: docker build -f docker/web.Dockerfile -t notification-web .
